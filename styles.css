@@ -264,3 +264,59 @@
 .contacto-item a:hover {
   text-decoration: underline;
 }
+
+/* ============================================
+   BOTONES DE NAVEGACION ACCESIBLES
+   ============================================ */
+
+.navegacion-accesible {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 100;
+  background: rgba(255,255,255,0.95);
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.navegacion-accesible button {
+  padding: 12px 24px;
+  font-size: 1em;
+  font-family: var(--fuente-principal);
+  background-color: var(--color-primario);
+  color: var(--color-texto-claro);
+  border: 2px solid var(--color-primario);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.navegacion-accesible button:hover {
+  background-color: var(--color-secundario);
+  border-color: var(--color-secundario);
+}
+
+.navegacion-accesible button:focus {
+  outline: 3px solid var(--color-acento);
+  outline-offset: 2px;
+}
+
+.navegacion-accesible button:disabled {
+  background-color: #A0AEC0;
+  border-color: #A0AEC0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.navegacion-accesible #indicador-slide {
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--color-primario);
+  min-width: 60px;
+  text-align: center;
+}

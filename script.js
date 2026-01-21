@@ -65,17 +65,20 @@ function inicializarReveal() {
   
   // Configurar anuncios para lectores de pantalla
   configurarAccesibilidad();
+  
+  // Agregar botones de navegacion accesibles
+  agregarBotonesAccesibles();
 }
 
 // Anunciar cambio de diapositiva para lectores de pantalla
 function configurarAccesibilidad() {
   Reveal.on('slidechanged', function(event) {
-    const slideNumber = event.indexh + 1;
-    const totalSlides = Reveal.getTotalSlides();
-    const slideLabel = event.currentSlide.getAttribute('aria-label') || 'Diapositiva ' + slideNumber;
+    var slideNumber = event.indexh + 1;
+    var totalSlides = Reveal.getTotalSlides();
+    var slideLabel = event.currentSlide.getAttribute('aria-label') || 'Diapositiva ' + slideNumber + ' de ' + totalSlides;
     
     // Crear anuncio para lectores de pantalla
-    const announcement = document.createElement('div');
+    var announcement = document.createElement('div');
     announcement.setAttribute('role', 'status');
     announcement.setAttribute('aria-live', 'polite');
     announcement.setAttribute('aria-atomic', 'true');
@@ -84,11 +87,76 @@ function configurarAccesibilidad() {
     
     document.body.appendChild(announcement);
     
+    // Actualizar estado de los botones
+    actualizarEstadoBotones();
+    
     // Eliminar despues de anunciar
     setTimeout(function() {
       announcement.remove();
     }, 1000);
   });
+}
+
+// Agregar botones de navegacion accesibles para lectores de pantalla
+function agregarBotonesAccesibles() {
+  var contenedor = document.createElement('nav');
+  contenedor.className = 'navegacion-accesible';
+  contenedor.setAttribute('aria-label', 'Navegacion de diapositivas');
+  
+  contenedor.innerHTML = 
+    '<button id="btn-anterior" type="button" aria-label="Ir a diapositiva anterior">Anterior</button>' +
+    '<span id="indicador-slide" aria-live="polite">1 de ' + Reveal.getTotalSlides() + '</span>' +
+    '<button id="btn-siguiente" type="button" aria-label="Ir a diapositiva siguiente">Siguiente</button>';
+  
+  document.body.appendChild(contenedor);
+  
+  document.getElementById('btn-anterior').addEventListener('click', function() {
+    Reveal.prev();
+  });
+  
+  document.getElementById('btn-siguiente').addEventListener('click', function() {
+    Reveal.next();
+  });
+  
+  // Estado inicial
+  actualizarEstadoBotones();
+}
+
+// Actualizar estado de botones segun la diapositiva actual
+function actualizarEstadoBotones() {
+  var btnAnterior = document.getElementById('btn-anterior');
+  var btnSiguiente = document.getElementById('btn-siguiente');
+  var indicador = document.getElementById('indicador-slide');
+  
+  var slideActual = Reveal.getIndices().h + 1;
+  var totalSlides = Reveal.getTotalSlides();
+  
+  // Actualizar indicador
+  if (indicador) {
+    indicador.textContent = slideActual + ' de ' + totalSlides;
+  }
+  
+  // Deshabilitar boton anterior en primera diapositiva
+  if (btnAnterior) {
+    if (slideActual === 1) {
+      btnAnterior.disabled = true;
+      btnAnterior.setAttribute('aria-disabled', 'true');
+    } else {
+      btnAnterior.disabled = false;
+      btnAnterior.setAttribute('aria-disabled', 'false');
+    }
+  }
+  
+  // Deshabilitar boton siguiente en ultima diapositiva
+  if (btnSiguiente) {
+    if (slideActual === totalSlides) {
+      btnSiguiente.disabled = true;
+      btnSiguiente.setAttribute('aria-disabled', 'true');
+    } else {
+      btnSiguiente.disabled = false;
+      btnSiguiente.setAttribute('aria-disabled', 'false');
+    }
+  }
 }
 
 // Iniciar carga cuando el DOM este listo
